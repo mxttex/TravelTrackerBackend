@@ -84,14 +84,14 @@ const serachParams = {
     }
  }
 
-//  getTickets(serachParams).then(data => {
-//     console.log("Biglietti: ", data)
-//  })
+ getTickets(serachParams).then(data => {
+    console.log("Biglietti: ", data.solutions)
+ })
 
 //  getStazione('cesena').then(data => {
 //     console.log("Stazione: ", data)
 //  })
 
- getStazione('').then(data => {
-    console.log("Stazioni: ", data)
- })
+//  getStazione('').then(data => {
+//     console.log("Stazioni: ", JSON.stringify(data))
+//  })
