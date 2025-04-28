@@ -24,38 +24,9 @@ router.route("/getStazione/:nStazione").get((req, res) => {
   });
 });
 
-// router.route("/getStazioni").get((req, res) => { //non
-//     api.getStazioni().then((data) => {
-//         res.status(201).json(data)
-//         console.log(data)
-//     })
-// })
 
 router.route("/getTicket").post((req, res) => {
-    /*{ POST Format
-    
-      "departureLocationId": 830004702,
-      "arrivalLocationId": 830000219,
-      "departureTime": "2024-10-18T18:00:00.000",
-      "adults": 1,
-      "children": 0,
-      "criteria": {
-        "frecceOnly": false,
-        "regionalOnly": false,
-        "intercityOnly": false,
-        "tourismOnly": false,
-        "noChanges": false,
-        "order": "DEPARTURE_DATE",
-        "offset": 0,
-        "limit": 10
-                    },
-      "advancedSearchRequest": {
-        "bestFare": false,
-        "bikeFilter": false
-    }
-    }*/
-  
-
+ 
     const searchParams = {
       departureLocationId: req.body.departureLocationId,
       arrivalLocationId: req.body.arrivalLocationId,
