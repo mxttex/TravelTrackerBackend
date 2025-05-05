@@ -16,18 +16,20 @@ async function getStazione(nomeStazione) {
   }
 }
 
-async function getStations() {
-  const url =
-    "https://www.trenitalia.com/content/dam/tcom/config/stationList.json";
-  try {
-    const response = await fetch(url)
-    if (!response.ok) { throw new Error("Erroraccio") }
-    else {
-      const data = await response.json()
-      return data
-    }
-  }catch(e){console.error(e)}
-}
+// async function getStations() {
+//   const url =
+//     "https://www.trenitalia.com/content/dam/tcom/config/stationList.json";
+//   try {
+//     const response = await fetch(url)
+//     if (!response.ok) { throw new Error("Erroraccio") }
+//     else {
+//       const data = await response.json()
+//       return data
+//     }
+//   }catch(e){console.error(e)}
+// }
+
+
 
 async function getTickets(params) {
   const url =
@@ -57,4 +59,5 @@ async function getTickets(params) {
 module.exports = {
   getStazione: getStazione,
   getTickets: getTickets,
+  getStations: getStations
 };
