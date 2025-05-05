@@ -24,6 +24,13 @@ router.route("/getStazione/:nStazione").get((req, res) => {
   });
 });
 
+// router.route("/getStazioni").get((req, res) => {
+//   api.getStations().then((data) => {
+//     res.status(201).json(data)
+//     console.log(data)
+//   })
+// })
+
 
 router.route("/getTicket").post((req, res) => {
  
