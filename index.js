@@ -50,6 +50,23 @@ router.route("/getTicket").post((req, res) => {
   });
 });
 
+router.get('/getFlights', async (req, res) => {
+  const { start, arrival, date } = req.query;
+
+  if (!start || !arrival || !date) {
+    return res.status(400).json({ error: 'Parametri mancanti: start, arrival e date sono obbligatori.' });
+  }
+
+  try {
+    const risultati = await api.findFlights(start, arrival, date);
+    res.json(risultati);
+  } catch (error) {
+    console.error('Errore nella richiesta ai voli:', error.message);
+    res.status(500).json({ error: 'Errore nella ricerca dei voli' });
+  }
+});
+
+
 var port = process.env.PORT || 8090;
 app.listen(port);
 console.log(`Le API sono in ascolto su http://localhost:${port}/api`);
