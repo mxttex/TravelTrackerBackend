@@ -18,23 +18,24 @@ async function getAccessToken() {
 }
 
 // Funzione per ottenere i viaggi aerei
-async function findFlights(partenza, arrivo, dataPartenza) {
+async function findFlights(start, arrival, date, adults = 1, children = 0) {
   const token = await getAccessToken();
 
-  const url = 'https://test.api.amadeus.com/v2/shopping/flight-offers';
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
-  const params = {
-    originLocationCode: partenza,
-    destinationLocationCode: arrivo,
-    departureDate: dataPartenza,
-    adults: 1,
-    nonStop: false,
-    max: 1,
-  };
+  const response = await axios.get("https://test.api.amadeus.com/v2/shopping/flight-offers", {
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    params: {
+      originLocationCode: start,
+      destinationLocationCode: arrival,
+      departureDate: date,
+      adults,
+      children,
+      nonStop: false,
+      max: 1
+    }
+  });
 
-  const response = await axios.get(url, { headers, params });
   return response.data;
 }
 
