@@ -4,6 +4,7 @@ const axios = require('axios');
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 
+// Funzione per creare una connessione con le API dei viaggi aerei
 async function getAccessToken() {
   const url = 'https://test.api.amadeus.com/v1/security/oauth2/token';
   const data = new URLSearchParams({
@@ -16,6 +17,7 @@ async function getAccessToken() {
   return response.data.access_token;
 }
 
+// Funzione per ottenere i viaggi aerei
 async function findFlights(partenza, arrivo, dataPartenza) {
   const token = await getAccessToken();
 
@@ -29,11 +31,22 @@ async function findFlights(partenza, arrivo, dataPartenza) {
     departureDate: dataPartenza,
     adults: 1,
     nonStop: false,
-    max: 5,
+    max: 1,
   };
 
   const response = await axios.get(url, { headers, params });
   return response.data;
+}
+
+//Funzione per convertire il formato della data fornita in input nel formato necessario per il funzionamento della ricerca dei viaggi aerei
+function convertToApiDate(inputDateTime) {
+  try {
+    const [datePart] = inputDateTime.split('-'); 
+    const [day, month, year] = datePart.split('/');
+    return `${year}-${month}-${day}`;
+  } catch (err) {
+    return null;
+  }
 }
 
 // Funzione per ottenere una stazione Trenitalia
@@ -81,4 +94,5 @@ module.exports = {
   getStazione,
   getTickets,
   findFlights,
+  convertToApiDate
 };

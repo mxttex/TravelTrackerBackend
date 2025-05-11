@@ -51,15 +51,38 @@ router.route("/getTicket").post((req, res) => {
 });
 
 router.get('/getFlights', async (req, res) => {
-  const { start, arrival, date } = req.query;
+  const { start, arrival, departureDate, returnDate } = req.query;
 
-  if (!start || !arrival || !date) {
-    return res.status(400).json({ error: 'Parametri mancanti: start, arrival e date sono obbligatori.' });
+  if (!start || !arrival || !departureDate) {
+    return res.status(400).json({ error: 'Parametri obbligatori mancanti: start, arrival e departureDate' });
+  }
+
+  const formattedDeparture = api.convertToApiDate(departureDate);
+  const formattedReturn = returnDate ? api.convertToApiDate(returnDate) : null;
+
+  if (!formattedDeparture || (returnDate && !formattedReturn)) {
+    return res.status(400).json({ error: 'Formato data non valido. Usa DD/MM/YYYY-HH:MM' });
   }
 
   try {
-    const risultati = await api.findFlights(start, arrival, date);
-    res.json(risultati);
+    const andataData = await api.findFlights(start, arrival, formattedDeparture);
+    const andata = (andataData.data || []).map(flight => ({
+      ...flight,
+      tipo: 'andata'
+    }));
+
+    let ritorno = [];
+    if (formattedReturn) {
+      const ritornoData = await api.findFlights(arrival, start, formattedReturn);
+      ritorno = (ritornoData.data || []).map(flight => ({
+        ...flight,
+        tipo: 'ritorno'
+      }));
+    }
+
+    const risultatiCombinati = [...andata, ...ritorno];
+
+    res.json(risultatiCombinati);
   } catch (error) {
     console.error('Errore nella richiesta ai voli:', error.message);
     res.status(500).json({ error: 'Errore nella ricerca dei voli' });
