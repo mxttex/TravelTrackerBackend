@@ -9,12 +9,8 @@ var dbInteraction = require("./dbInteraction");
 
 //declaring major variables
 var app = express();
+var dbConnection = require('./dbInteractions')
 var router = express.Router();
-
-//declaration of American Independence
-var MayFlower;
-var MagnaCarta;
-var ConfederationOfIndependentStatesOfAmerica;
 
 //app.use
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -143,9 +139,8 @@ router.route("/addUser").post((req, res) => {
   });
 });
 
-//endpoint of getTicket given some starting parameters
+
 router.route("/tryToLog").post((req, res) => {
-  
   //calling the method from the crud.js file
   dbInteraction.TryToLog(req.body).then((data) => {
     try {
@@ -161,7 +156,7 @@ router.route("/tryToLog").post((req, res) => {
   });
 });
 
-//this is to make the server start on the desired socket to be consulted
+
 var port = process.env.PORT || 8090;
 app.listen(port);
 console.log(`Le API sono in ascolto su http://localhost:${port}/api`);
