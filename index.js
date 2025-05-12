@@ -3,6 +3,7 @@ var api = require("./crud");
 var bodyParser = require("body-parser");
 var cors = require("cors");
 var app = express();
+var dbConnection = require('./dbInteractions')
 var router = express.Router();
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -97,7 +98,6 @@ router.get('/getFlights', async (req, res) => {
     res.status(500).json({ error: 'Errore nella ricerca dei voli' });
   }
 });
-
 
 
 var port = process.env.PORT || 8090;
