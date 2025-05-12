@@ -127,6 +127,55 @@ router.get("/getFlights", async (req, res) => {
   }
 });
 
+router.get('/getRandomFlights', async(req,res) => {
+  try{
+    const flights = await api.findRandomFlights();
+    res.json(flights);
+  }catch(error){
+    console.error('Errore nella richiesta ai voli:', error.message);
+    res.status(500).json({ error: 'Errore nella ricerca dei voli' });
+  }
+});
+
+router.get("/getDelayFromAFlight", async (req, res) => {
+  const {
+    originLocationCode,
+    destinationLocationCode,
+    departureDate,
+    departureTime,
+    arrivalDate,
+    arrivalTime,
+    aircraftCode,
+    carrierCode,
+    flightNumber,
+    duration
+  } = req.query;
+
+  if (!originLocationCode || !destinationLocationCode || !departureDate || !departureTime ||
+      !arrivalDate || !arrivalTime || !aircraftCode || !carrierCode || !flightNumber || !duration) {
+    return res.status(400).json({ error: 'Parametri mancanti: tutti i campi sono obbligatori' });
+  }
+
+  try {
+    const prediction = await api.getDelayPrediction({
+      originLocationCode,
+      destinationLocationCode,
+      departureDate,
+      departureTime,
+      arrivalDate,
+      arrivalTime,
+      aircraftCode,
+      carrierCode,
+      flightNumber,
+      duration
+    });
+    res.json(prediction);
+  } catch (error) {
+    console.error("Errore nella delay prediction:", error.message);
+    res.status(500).json({ error: "Errore nella delay prediction" });
+  }
+});
+
 //used to add a user through dbInteraction's method
 router.route("/addUser").post((req, res) => {
   dbInteraction.AddUser(req.body).then((data) => {
@@ -155,6 +204,7 @@ router.route("/tryToLog").post((req, res) => {
     }
   });
 });
+
 
 
 var port = process.env.PORT || 8090;
