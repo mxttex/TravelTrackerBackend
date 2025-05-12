@@ -17,7 +17,7 @@ async function getAccessToken() {
   return response.data.access_token;
 }
 
-// Funzione per ottenere i viaggi aerei
+// Funzione per ottenere i viaggi aerei richiesti dall'utente
 async function findFlights(start, arrival, date, adults = 1, children = 0) {
   const token = await getAccessToken();
 
@@ -33,6 +33,40 @@ async function findFlights(start, arrival, date, adults = 1, children = 0) {
       children,
       nonStop: false,
       max: 1
+    }
+  });
+
+  return response.data;
+}
+
+//Funzione per ottenere, come debug, 50 viaggi aerei casuali
+async function findRandomFlights() {
+  const token = await getAccessToken();
+
+  const airports = ['FCO', 'JFK', 'LHR', 'CDG', 'MAD', 'DXB', 'LAX', 'ORD', 'HND', 'AMS'];
+
+  const randomStart = airports[Math.floor(Math.random() * airports.length)];
+  let randomArrival = airports[Math.floor(Math.random() * airports.length)];
+  while (randomArrival === randomStart) {
+    randomArrival = airports[Math.floor(Math.random() * airports.length)];
+  }
+
+  const today = new Date();
+  const randomDays = Math.floor(Math.random() * 30);
+  const randomDate = new Date(today.getTime() + randomDays * 24 * 60 * 60 * 1000);
+  const departureDate = randomDate.toISOString().split('T')[0];
+
+  const response = await axios.get("https://test.api.amadeus.com/v2/shopping/flight-offers", {
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    params: {
+      originLocationCode: randomStart,
+      destinationLocationCode: randomArrival,
+      departureDate: departureDate,
+      adults: 1,
+      nonStop: false,
+      max: 50
     }
   });
 
@@ -95,5 +129,6 @@ module.exports = {
   getStazione,
   getTickets,
   findFlights,
-  convertToApiDate
+  convertToApiDate,
+  findRandomFlights
 };

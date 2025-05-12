@@ -98,7 +98,15 @@ router.get('/getFlights', async (req, res) => {
   }
 });
 
-
+router.get("/getRandomFlights", async(req,res) => {
+  try{
+    const flights = await api.findRandomFlights();
+    res.json(flights);
+  }catch(error){
+    console.error('Errore nella richiesta ai voli:', error.message);
+    res.status(500).json({ error: 'Errore nella ricerca dei voli' });
+  }
+});
 
 var port = process.env.PORT || 8090;
 app.listen(port);
