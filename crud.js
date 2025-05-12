@@ -73,6 +73,22 @@ async function findRandomFlights() {
   return response.data;
 }
 
+//Funzione per ottenere, dato un volo, il ritardo di esso
+async function getDelayPrediction(params) {
+  const token = await getAccessToken();
+
+  console.log(params)
+
+  const response = await axios.get("https://test.api.amadeus.com/v1/travel/predictions/flight-delay", {
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    params: params
+  });
+
+  return response.data;
+}
+
 //Funzione per convertire il formato della data fornita in input nel formato necessario per il funzionamento della ricerca dei viaggi aerei
 function convertToApiDate(inputDateTime) {
   try {
@@ -130,5 +146,6 @@ module.exports = {
   getTickets,
   findFlights,
   convertToApiDate,
-  findRandomFlights
+  findRandomFlights,
+  getDelayPrediction
 };
