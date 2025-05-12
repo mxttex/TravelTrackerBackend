@@ -1,85 +1,114 @@
+//importing main services
 var express = require("express");
-var api = require("./crud");
 var bodyParser = require("body-parser");
 var cors = require("cors");
+
+//importing other js files with functions
+var api = require("./crud");
+var dbInteraction = require("./dbInteraction");
+
+//declaring major variables
 var app = express();
+var dbConnection = require('./dbInteractions')
 var router = express.Router();
 
+//app.use
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 app.use("/api", router);
 
+//server starting
 router.use((request, response, next) => {
   console.log("Server in funzione...");
   next();
 });
 
+//endpoint of getStation
 router.route("/getStazione/:nStazione").get((req, res) => {
   console.log(req.params.nStazione);
   nomeStazione = req.params.nStazione;
   api.getStazione(nomeStazione).then((data) => {
-    res.status(201).json(data);
+    res.status(200).json(data);
     console.log(data);
   });
 });
 
 // router.route("/getStazioni").get((req, res) => {
 //   api.getStations().then((data) => {
-//     res.status(201).json(data)
+//     res.status(200).json(data)
 //     console.log(data)
 //   })
 // })
 
-
+//endpoint of getTicket given some starting parameters
 router.route("/getTicket").post((req, res) => {
- 
-    const searchParams = {
-      departureLocationId: req.body.departureLocationId,
-      arrivalLocationId: req.body.arrivalLocationId,
-      departureTime: req.body.departureTime,
-      adults: req.body.adults,
-      children: req.body.children,
-      criteria: req.body.criteria,
-      advancedSearchRequest: req.body.advancedSearchRequest,
-    };
+  const searchParams = {
+    departureLocationId: req.body.departureLocationId,
+    arrivalLocationId: req.body.arrivalLocationId,
+    departureTime: req.body.departureTime,
+    adults: req.body.adults,
+    children: req.body.children,
+    criteria: req.body.criteria,
+    advancedSearchRequest: req.body.advancedSearchRequest,
+  };
 
+  //calling the method from the crud.js file
   api.getTickets(searchParams).then((data) => {
-    res.status(201).json(data);
+    res.status(200).json(data);
     console.log(data);
   });
 });
 
-router.get('/getFlights', async (req, res) => {
-  const { start, arrival, departureDate, returnDate, adults, children } = req.query;
+//endpoint to getFlights
+router.get("/getFlights", async (req, res) => {
+  const { start, arrival, departureDate, returnDate, adults, children } =
+    req.query;
 
   if (!start || !arrival || !departureDate || !adults) {
-    return res.status(400).json({ error: 'Parametri obbligatori mancanti: start, arrival, departureDate e adults' });
+    return res.status(400).json({
+      error:
+        "Parametri obbligatori mancanti: start, arrival, departureDate e adults",
+    });
   }
 
   const formattedDeparture = api.convertToApiDate(departureDate);
   const formattedReturn = returnDate ? api.convertToApiDate(returnDate) : null;
 
   if (!formattedDeparture || (returnDate && !formattedReturn)) {
-    return res.status(400).json({ error: 'Formato data non valido. Usa DD/MM/YYYY-HH:MM' });
+    return res
+      .status(400)
+      .json({ error: "Formato data non valido. Usa DD/MM/YYYY-HH:MM" });
   }
 
   try {
     const adulti = parseInt(adults);
     const bambini = children ? parseInt(children) : 0;
 
-    const andataData = await api.findFlights(start, arrival, formattedDeparture, adulti, bambini);
-    const andata = (andataData.data || []).map(flight => ({
+    const andataData = await api.findFlights(
+      start,
+      arrival,
+      formattedDeparture,
+      adulti,
+      bambini
+    );
+    const andata = (andataData.data || []).map((flight) => ({
       ...flight,
-      tipo: 'andata'
+      tipo: "andata",
     }));
 
     let ritorno = [];
     if (formattedReturn) {
-      const ritornoData = await api.findFlights(arrival, start, formattedReturn, adulti, bambini);
-      ritorno = (ritornoData.data || []).map(flight => ({
+      const ritornoData = await api.findFlights(
+        arrival,
+        start,
+        formattedReturn,
+        adulti,
+        bambini
+      );
+      ritorno = (ritornoData.data || []).map((flight) => ({
         ...flight,
-        tipo: 'ritorno'
+        tipo: "ritorno",
       }));
     }
 
@@ -93,8 +122,8 @@ router.get('/getFlights', async (req, res) => {
 
     res.json(risultatiCombinati);
   } catch (error) {
-    console.error('Errore nella richiesta ai voli:', error.message);
-    res.status(500).json({ error: 'Errore nella ricerca dei voli' });
+    console.error("Errore nella richiesta ai voli:", error.message);
+    res.status(500).json({ error: "Errore nella ricerca dei voli" });
   }
 });
 
@@ -147,6 +176,34 @@ router.get("/getDelayFromAFlight", async (req, res) => {
   }
 });
 
+//used to add a user through dbInteraction's method
+router.route("/addUser").post((req, res) => {
+  dbInteraction.AddUser(req.body).then((data) => {
+    try {
+      res.status(201).json(data);
+      console.log(data);
+    } catch (ex) {
+      res.status(500).send(`Errore nell'inserimento nel DB.`)
+    }
+  });
+});
+
+
+router.route("/tryToLog").post((req, res) => {
+  //calling the method from the crud.js file
+  dbInteraction.TryToLog(req.body).then((data) => {
+    try {
+      if(res.data[0] == []){
+        res.status(403).send(`No User Found.`)
+        return;
+      }
+      res.status(200).json(data);
+      console.log(data);      
+    } catch (ex) {
+      res.status(500).send(`Errore interno al server.`)
+    }
+  });
+});
 
 
 
