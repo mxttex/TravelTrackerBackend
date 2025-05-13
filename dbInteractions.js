@@ -1,7 +1,7 @@
 const mariadb = require('mariadb')
 const config = require('connection.js')
 
-export const AddUser = async (data) => {
+async function AddUser(data)  {
     try {
         let connection = mariadb.createConnection(config)
         return new Promise(
@@ -23,7 +23,7 @@ export const AddUser = async (data) => {
     }
 }
 
-export const TryToLog = async (data) => {
+async function TryToLog(body){
     try {
         let connection = mariadb.createConnection(config)
         return new Promise(
