@@ -1,6 +1,7 @@
 const mariadb = require('mariadb')
 const config = require('connection.js')
 
+//add a User with some starting parameters
 async function AddUser(data) {
     try {
         return DoQuery([data.Username, data.Mail, data.Nome, data.Cognome, data.Password, data.DataDiNascita],
@@ -12,6 +13,7 @@ async function AddUser(data) {
     }
 }
 
+//try to log in give a mail, psw and other parameters
 async function TryToLog(data){
     try {
         return DoQuery(data, `SELECT Username, Mail, Nome, Cognome, DataDiNascita FROM Clienti WHERE Username=? AND Password=?`)
@@ -21,11 +23,15 @@ async function TryToLog(data){
     }
 }
 
+//add a Viaggio given CittàDiPartenza, CittàDiArrivo, Prezzo, PuntiAccumulati=0, NrPartecipanti
 async function AddViaggio(data){
     try {
-        
+        return DoQuery([data.Cliente, data.CittaDiPartenza, data.CittaDiArrivo, data.Prezzo],
+            `INSERT INTO TravelTrackerDB.Viaggio(Cliente, CittaDiPartenza, CittaDiArrivo, Prezzo, 0)
+                            VALUES
+                            (?,?,?,?)`)
     } catch (error) {
-        
+        throw new Error(error)
     }
 }
 
@@ -80,5 +86,6 @@ const DoQuery = async (data, query) => {
 
 module.exports = {
     TryToLog: TryToLog,
-    AddUser : AddUser
+    AddUser : AddUser,
+    AddViaggio: AddViaggio
 }
