@@ -10,6 +10,9 @@ var api = require("./crud");
 //declaring major variables
 var app = express();
 //var dbConnection = require('./dbInteractions')
+
+
+const dbInteractions = require("./dbInteractions");
 var router = express.Router();
 
 //app.use
@@ -189,7 +192,7 @@ router.get("/getAeroporto/:nome", async (req, res) => {
 
 //used to add a user through dbInteraction's method
 router.route("/addUser").post((req, res) => {
-  dbInteraction.AddUser(req.body).then((data) => {
+  dbInteractions.AddUser(req.body).then((data) => {
     try {
       res.status(201).json(data);
       console.log(data);
@@ -202,7 +205,7 @@ router.route("/addUser").post((req, res) => {
 
 router.route("/tryToLog").post((req, res) => {
   //calling the method from the crud.js file
-  dbInteraction.TryToLog(req.body).then((data) => {
+  dbInteractions.TryToLog(req.body).then((data) => {
     try {
       if(res.data[0] == []){
         res.status(403).send(`No User Found.`)
@@ -215,6 +218,10 @@ router.route("/tryToLog").post((req, res) => {
     }
   });
 });
+
+router.route("/bookViaggio").post((req, res) => {
+  res.status(500).send('ancora da implementare')
+}) 
 
 
 
