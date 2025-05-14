@@ -204,6 +204,10 @@ router.route("/tryToLog").post((req, res) => {
   });
 });
 
+router.route("/bookViaggio").post((req, res) => {
+  res.status(500).send('ancora da implementare')
+}) 
+
 
 
 var port = process.env.PORT || 8090;

@@ -23,7 +23,7 @@ async function TryToLog(data){
 
 async function AddViaggio(data){
     try {
-        return 
+        
     } catch (error) {
         
     }
@@ -31,7 +31,11 @@ async function AddViaggio(data){
 
 async function AddTratta(data){
     try {
-        
+        let prog = 0
+        data.tratte.forEach(async () => {
+            DoQuery([prog, data.Mezzo, data.CodiceMezzo, data.CittaPartenza, data.CittaArrivo, data.OrarioPartenza, data.OrarioArrivo])
+        })
+        return true
     } catch (error) {
         
     }
