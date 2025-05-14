@@ -125,13 +125,11 @@ async function getDelayPrediction(params) {
 
 async function getAeroporto(nomeAeroporto) {
   const token = await getAccessToken();
-
-  const nomeTradotto = traduzioni[nomeAeroporto.toLowerCase()] || nomeAeroporto;
+ const nomeTradotto = traduzioni[nomeAeroporto.toLowerCase()] || nomeAeroporto;
 
   const url = `https://test.api.amadeus.com/v1/reference-data/locations?subType=AIRPORT,CITY&keyword=${nomeTradotto}&view=FULL`;
 
   try {
-    const token = await getAccessToken();
     const response = await axios.get(url, {
       headers: {
         Authorization: `Bearer ${token}`
