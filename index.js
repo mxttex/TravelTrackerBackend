@@ -5,11 +5,11 @@ var cors = require("cors");
 
 //importing other js files with functions
 var api = require("./crud");
-var dbInteraction = require("./dbInteraction");
+//var dbInteraction = require("./dbInteractions");
 
 //declaring major variables
 var app = express();
-var dbConnection = require('./dbInteractions')
+//var dbConnection = require('./dbInteractions')
 var router = express.Router();
 
 //app.use
@@ -173,6 +173,17 @@ router.get("/getDelayFromAFlight", async (req, res) => {
   } catch (error) {
     console.error("Errore nella delay prediction:", error.message);
     res.status(500).json({ error: "Errore nella delay prediction" });
+  }
+});
+
+router.get("/getAeroporto/:nome", async (req, res) => {
+  const nomeAeroporto = req.params.nome;
+
+  try {
+    const risultati = await api.getAeroporto(nomeAeroporto);
+    res.status(200).json(risultati);
+  } catch (error) {
+    res.status(500).json({ error: "Errore nella ricerca aeroporto" });
   }
 });
 

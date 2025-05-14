@@ -4,6 +4,40 @@ const axios = require('axios');
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 
+const traduzioni = {
+  "roma": "rome",
+  "milano": "milan",
+  "napoli": "naples",
+  "venezia": "venice",
+  "torino": "turin",
+  "bologna": "bologna",
+  "palermo": "palermo",
+  "catania": "catania",
+  "firenze": "florence",
+  "genova": "genoa",
+  "bari": "bari",
+  "verona": "verona",
+  "pisa": "pisa",
+  "bergamo": "bergamo",
+  "treviso": "treviso",
+  "brindisi": "brindisi",
+  "lamezia terme": "lamezia terme",
+  "trapani": "trapani",
+  "ancona": "ancona",
+  "perugia": "perugia",
+  "parma": "parma",
+  "trieste": "trieste",
+  "alghero": "alghero",
+  "olbia": "olbia",
+  "cagliari": "cagliari",
+  "reggio calabria": "reggio calabria",
+  "forlì": "forli",
+  "rimini": "rimini",
+  "salerno": "salerno",
+  "bolzano": "bolzano",
+  "aosta": "aosta"
+};
+
 // Funzione per creare una connessione con le API dei viaggi aerei
 async function getAccessToken() {
   const url = 'https://test.api.amadeus.com/v1/security/oauth2/token';
@@ -89,10 +123,31 @@ async function getDelayPrediction(params) {
   return response.data;
 }
 
+async function getAeroporto(nomeAeroporto) {
+  const token = await getAccessToken();
+
+  const nomeTradotto = traduzioni[nomeAeroporto.toLowerCase()] || nomeAeroporto;
+
+  const url = `https://test.api.amadeus.com/v1/reference-data/locations?subType=AIRPORT,CITY&keyword=${nomeTradotto}&view=FULL`;
+
+  try {
+    const token = await getAccessToken();
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Errore nella ricerca dell'aeroporto:", error.message);
+    return null;
+  }
+}
 //Funzione per convertire il formato della data fornita in input nel formato necessario per il funzionamento della ricerca dei viaggi aerei
 function convertToApiDate(inputDateTime) {
   try {
-    const [datePart] = inputDateTime.split('-'); 
+    const [datePart] = inputDateTime.split('-');
     const [day, month, year] = datePart.split('/');
     return `${year}-${month}-${day}`;
   } catch (err) {
@@ -147,5 +202,6 @@ module.exports = {
   findFlights,
   convertToApiDate,
   findRandomFlights,
-  getDelayPrediction
+  getDelayPrediction,
+  getAeroporto
 };
