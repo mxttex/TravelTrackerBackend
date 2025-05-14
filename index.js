@@ -12,7 +12,7 @@ var app = express();
 //var dbConnection = require('./dbInteractions')
 
 
-const dbInteractions = require("./dbInteractions");
+//const dbInteractions = require("./dbInteractions");
 var router = express.Router();
 
 //app.use
@@ -46,21 +46,37 @@ router.route("/getStazione/:nStazione").get((req, res) => {
 
 //endpoint of getTicket given some starting parameters
 router.route("/getTicket").post((req, res) => {
+  console.log(req.body);  
   const searchParams = {
-    departureLocationId: req.body.departureLocationId,
-    arrivalLocationId: req.body.arrivalLocationId,
-    departureTime: req.body.departureTime,
-    adults: req.body.adults,
-    children: req.body.children,
-    criteria: req.body.criteria,
-    advancedSearchRequest: req.body.advancedSearchRequest,
-  };
+      departureLocationId: req.body.departureStation,
+      arrivalLocationId: req.body.arrivalStation,
+      departureTime: req.body.departureDate,
+      arrivalTime : req.body.arrivalDate ? new Date(req.body.arrivalDate).toISOString() : null,
+      adults: req.body.adultNumber,
+      children: req.body.childrenNumber,
+      criteria: req.body.criteria ? req.body.criteria : null,
+      advancedSearchRequest: req.body.advancedSearchRequest ? req.body.advancedSearchRequest : null, 
+    };
 
-  //calling the method from the crud.js file
-  api.getTickets(searchParams).then((data) => {
-    res.status(200).json(data);
-    console.log(data);
+
+  if(searchParams.arrivalTime == null){
+    delete searchParams.arrivalTime;
+  }
+  if(searchParams.advancedSearchRequest == null){
+    delete searchParams.advancedSearchRequest;
+  }
+  if(searchParams.criteria == null){
+    delete searchParams.criteria;
+  }
+  const searchParamsJson = JSON.stringify(searchParams);
+
+  
+
+  api.getTickets(searchParamsJson).then((data) => {
+    res.status(201).json(data);
+    
   });
+
 });
 
 //endpoint to getFlights
