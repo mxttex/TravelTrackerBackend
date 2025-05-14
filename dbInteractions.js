@@ -25,23 +25,25 @@ async function AddUser(data)  {
 
 async function TryToLog(body){
     try {
-        let connection = mariadb.createConnection(config)
+        return DoQuery(data)
+    } 
+    catch (error) {
+        throw new Error(error)
+    }
+}
+
+const DoQuery = async (data, query) => {
+    let connection = mariadb.createConnection(config)
         return new Promise(
             (resolve) => {
                 setTimeout(function () {
                     resolve(
                         connection.query(
-                            'query da inserire'
+                            query
                         ),
-                        [data.Username, data.Password]
-
-                        //ritorna [] se non trova nessun utente teoricamente, ma lo sapremo quando avremo dei dati da testare
+                        data
                     )
                 })
             }
         )
-    } 
-    catch (error) {
-        throw new Error(error)
-    }
 }
