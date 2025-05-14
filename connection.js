@@ -1,8 +1,10 @@
 //per prova, poi andrà inserito nel file dot env
-export default connection = {
-    host: "192.0.2.1",
-    user: "db_user",
-    password: "db_user_password",
-    database: "test",
+ connection = {
+    host: "10.100.200.7",
+    user: "pi",
+    password: "classe5f!",
+    database: "DatabaseProjectWork",
     trace: true,
  }
+
+ module.exports = connection

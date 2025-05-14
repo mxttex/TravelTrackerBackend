@@ -1,5 +1,5 @@
 const mariadb = require('mariadb')
-const config = require('connection.js')
+const config = require('./connection')
 
 //add a User with some starting parameters
 async function AddUser(data) {
@@ -24,26 +24,56 @@ async function TryToLog(data){
 }
 
 //add a Viaggio given CittàDiPartenza, CittàDiArrivo, Prezzo, PuntiAccumulati=0, NrPartecipanti
-async function AddViaggio(data){
+async function AddViaggio(data) {
     try {
-        return DoQuery([data.Cliente, data.CittaDiPartenza, data.CittaDiArrivo, data.Prezzo],
-            `INSERT INTO TravelTrackerDB.Viaggio(Cliente, CittaDiPartenza, CittaDiArrivo, Prezzo, 0)
-                            VALUES
-                            (?,?,?,?)`)
+        const result = await DoQuery(
+            [data.Cliente, data.CittaDiPartenza, data.CittaDiArrivo, data.Prezzo],
+            `INSERT INTO TravelTrackerDB.Viaggio (Cliente, CittaDiPartenza, CittaDiArrivo, Prezzo)
+             VALUES (?, ?, ?, ?)`
+        );
+
+        const viaggioId = result.insertId; 
+
+        await AddTratta(viaggioId, data.tratte);
+
+        return true;
     } catch (error) {
-        throw new Error(error)
+        throw new Error(error.message || error);
     }
 }
 
-async function AddTratta(data){
+async function AddTratta(viaggioId, tratte) {
     try {
-        let prog = 0
-        data.tratte.forEach(async () => {
-            DoQuery([prog, data.Mezzo, data.CodiceMezzo, data.CittaPartenza, data.CittaArrivo, data.OrarioPartenza, data.OrarioArrivo])
-        })
-        return true
+        let prog = 0;
+
+        for (const tratta of tratte) {
+            await DoQuery(
+                [
+                    viaggioId,
+                    prog++,
+                    tratta.CittaPartenza,
+                    tratta.CittaArrivo,
+                    tratta.OrarioPartenza,
+                    tratta.OrarioArrivo,
+                    tratta.CodiceMezzo,
+                    tratta.Mezzo
+                ],
+                `INSERT INTO TravelTrackerDB.Tratta (
+                    Viaggio,
+                    Progressivo,
+                    CittaDiPartenza,
+                    CittaDiArrivo,
+                    OrarioPartenza,
+                    OrarioArrivo,
+                    CodiceMezzo,
+                    TipologiaMezzo
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+            );
+        }
+
+        return true;
     } catch (error) {
-        
+        throw new Error(error.message || error);
     }
 }
 
