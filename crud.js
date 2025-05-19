@@ -212,5 +212,5 @@ module.exports = {
   convertToApiDate,
   findRandomFlights,
   getDelayPrediction,
-  getAeroporto
+  getAeroporto,
 };
