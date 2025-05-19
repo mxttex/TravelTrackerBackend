@@ -1,3 +1,13 @@
 const dbInteraction = require("./dbInteractions")
 
-dbInteraction.AddUser(["faccettz", "faccettz@fmail.com", "data.Nome"," data.Cognome", "data.Password", "21.05.2006"])
+
+
+dbInteraction.AddUser({
+    Username: "Diegofaccettz",
+    Mail: "dfaccettz@fmail.com",
+    Nome: "Diego",
+    Cognome: "Prova",
+    Password: "securePassword123",
+    PuntiFedelta: 0,
+    DataDiNascita: "2006-05-22"
+});

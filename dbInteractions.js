@@ -4,12 +4,35 @@ const config = require('./connection')
 //add a User with some starting parameters
 async function AddUser(data) {
     try {
-        return DoQuery([data.Username, data.Mail, data.Nome, data.Cognome, data.Password, data.DataDiNascita],
-            `INSERT INTO TravelTrackerDB.Cliente(Username, Mail, Nome, Cognome, Password, DataDiNascita)
-                        VALUES
-                        (?,?,?,?,?,?)`)
+        // Log dei dati ricevuti
+        console.log('Dati ricevuti:', data);
+        
+        const query = `INSERT INTO DatabaseProjectWork.Cliente(Username, Mail, Nome, Cognome, Password,PuntiFedelta, DataDiNascita) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+
+        const params = [
+            data.Username,
+            data.Mail,
+            data.Nome,
+            data.Cognome,
+            data.Password,
+            data.PuntiFedelta,
+            data.DataDiNascita
+        ];
+
+        // Log della query e dei parametri
+        console.log('Query SQL:', query);
+        console.log('Parametri:', params);
+
+        // Esegui la query
+        const result = await DoQuery(query, params);
+
+        console.log('Risultato:', result);
+        return result; // Torna il risultato della query
+
     } catch (error) {
-        throw new Error(error)
+        // Log dell'errore
+        console.error('Errore nell\'inserimento del cliente:', error);
+        throw error; // Rilancia l'errore
     }
 }
 
@@ -28,7 +51,7 @@ async function AddViaggio(data) {
     try {
         const result = await DoQuery(
             [data.Cliente, data.CittaDiPartenza, data.CittaDiArrivo, data.Prezzo],
-            `INSERT INTO TravelTrackerDB.Viaggio (Cliente, CittaDiPartenza, CittaDiArrivo, Prezzo)
+            `INSERT INTO DatabaseProjectWork.Viaggio (Cliente, CittaDiPartenza, CittaDiArrivo, Prezzo)
              VALUES (?, ?, ?, ?)`
         );
 
@@ -59,7 +82,7 @@ async function AddTratta(viaggioId, tratte) {
                     tratta.CodiceMezzo,
                     tratta.Mezzo
                 ],
-                `INSERT INTO TravelTrackerDB.Tratta (
+                `INSERT INTO DatabaseProjectWork.Tratta (
                     Viaggio,
                     Progressivo,
                     CittaDiPartenza,
@@ -127,21 +150,39 @@ async function FetchViaggioGivenPartenzaArrivoUtente(data) {
 }
 
 //core of every query, it enstablish a connection with the db and allows to do queries
-const DoQuery = async (data, query) => {
-    let connection = mariadb.createConnection(config)
-    return new Promise(
-        (resolve) => {
-            setTimeout(function () {
-                resolve(
-                    connection.query(
-                        query
-                    ),
-                    data
-                )
-            })
+const DoQuery = async (query, params) => {
+    const pool = mariadb.createPool({
+        host: "10.100.200.7",
+        user: "classe5f",
+        password: "classe5f!",
+        database: "DatabaseProjectWork",
+        trace: true,
+    });
+
+    let connection;
+    try {
+        // Ottieni una connessione dal pool
+        connection = await pool.getConnection();
+
+        // Esegui la query con i parametri
+        const result = await connection.query(query, params);
+
+        console.log(result); // Log del risultato
+
+        return result; // Restituisci il risultato della query
+
+    } catch (error) {
+        console.error('Errore durante l\'esecuzione della query:', error);
+        throw error; // Rilancia l'errore
+    } finally {
+        // Chiudi la connessione e il pool, anche in caso di errore
+        if (connection) {
+            connection.end();
         }
-    )
-}
+        pool.end();
+    }
+};
+
 
 //export of various methods from this file to others
 module.exports = {

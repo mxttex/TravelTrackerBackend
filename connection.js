@@ -1,7 +1,7 @@
 //per prova, poi andrà inserito nel file dot env
  connection = {
     host: "10.100.200.7",
-    user: "pi",
+    user: "classe5f",
     password: "classe5f!",
     database: "DatabaseProjectWork",
     trace: true,
