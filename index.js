@@ -5,14 +5,10 @@ var cors = require("cors");
 
 //importing other js files with functions
 var api = require("./crud");
-//var dbInteraction = require("./dbInteractions");
+var dbInteractions = require("./dbInteractions");
 
 //declaring major variables
 var app = express();
-//var dbConnection = require('./dbInteractions')
-
-
-//const dbInteractions = require("./dbInteractions");
 var router = express.Router();
 
 //app.use
@@ -221,14 +217,15 @@ router.route("/addUser").post((req, res) => {
 
 router.route("/tryToLog").post((req, res) => {
   //calling the method from the crud.js file
+  console.dir(req.body)
   dbInteractions.TryToLog(req.body).then((data) => {
     try {
-      if(res.data[0] == []){
+      if(data[0] == []){
         res.status(403).send(`No User Found.`)
         return;
       }
       res.status(200).json(data);
-      console.log(data);      
+      console.log(data);
     } catch (ex) {
       res.status(500).send(`Errore interno al server.`)
     }
@@ -239,7 +236,7 @@ router.route("/bookViaggio").post((req, res) => {
   res.status(500).send('ancora da implementare')
 }) 
 
-
+// console.log(await dbInteraction.TryToLog({Username: 'Nikolas', Password: 'ForzaNapoli'}));
 
 var port = process.env.PORT || 8090;
 app.listen(port);
