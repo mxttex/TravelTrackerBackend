@@ -40,7 +40,7 @@ async function AddUser(data) {
 async function TryToLog(data) {
     try {
         console.dir(data)
-        return DoQuery([data.Username, data.Password], `SELECT Username, Mail, Nome, Cognome, DataDiNascita FROM Clienti WHERE Username=? AND Password=?`)
+        return DoQuery([data.Username, data.Password], `SELECT Username, Mail, Nome, Cognome, DataDiNascita FROM Cliente WHERE Username=? AND Password=?`)
     }
     catch (error) {
         throw new Error(error)

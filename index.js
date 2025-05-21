@@ -220,12 +220,12 @@ router.route("/tryToLog").post((req, res) => {
   console.dir(req.body)
   dbInteractions.TryToLog(req.body).then((data) => {
     try {
-      if(res.data[0] == []){
+      if(data[0] == []){
         res.status(403).send(`No User Found.`)
         return;
       }
       res.status(200).json(data);
-      console.log(data);      
+      console.log(data);
     } catch (ex) {
       res.status(500).send(`Errore interno al server.`)
     }
