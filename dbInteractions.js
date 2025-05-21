@@ -39,6 +39,7 @@ async function AddUser(data) {
 //try to log in give a mail, psw and other parameters
 async function TryToLog(data) {
     try {
+        console.dir(data)
         return DoQuery([data.Username, data.Password], `SELECT Username, Mail, Nome, Cognome, DataDiNascita FROM Clienti WHERE Username=? AND Password=?`)
     }
     catch (error) {
@@ -150,7 +151,7 @@ async function FetchViaggioGivenPartenzaArrivoUtente(data) {
 }
 
 //core of every query, it enstablish a connection with the db and allows to do queries
-const DoQuery = async (query, params) => {
+const DoQuery = async (params, query) => {
     const pool = mariadb.createPool({
         host: "10.100.200.7",
         user: "classe5f",
