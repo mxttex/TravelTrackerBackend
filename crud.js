@@ -73,7 +73,7 @@ async function findFlights(start, arrival, date, adults = 1, children = 0) {
   return response.data;
 }
 
-//Funzione per ottenere, come debug, 50 viaggi aerei casuali
+//Funzione per ottenere, come debug, 10 viaggi aerei casuali
 async function findRandomFlights() {
   const token = await getAccessToken();
 
@@ -100,7 +100,7 @@ async function findRandomFlights() {
       departureDate: departureDate,
       adults: 1,
       nonStop: false,
-      max: 50
+      max: 10
     }
   });
 
@@ -145,9 +145,17 @@ async function getAeroporto(nomeAeroporto) {
 //Funzione per convertire il formato della data fornita in input nel formato necessario per il funzionamento della ricerca dei viaggi aerei
 function convertToApiDate(inputDateTime) {
   try {
-    const [datePart] = inputDateTime.split('-');
-    const [day, month, year] = datePart.split('/');
-    return `${year}-${month}-${day}`;
+    if (inputDateTime.includes('/')) {
+      // formato DD/MM/YYYY o DD/MM/YYYY-HH:MM
+      const [datePart] = inputDateTime.split('-'); // es. "18/05/2025"
+      const [day, month, year] = datePart.split('/');
+      return `${year}-${month}-${day}`;
+    } else if (/^\d{4}-\d{2}-\d{2}$/.test(inputDateTime)) {
+      // formato ISO YYYY-MM-DD
+      return inputDateTime;
+    } else {
+      return null;
+    }
   } catch (err) {
     return null;
   }
@@ -204,5 +212,5 @@ module.exports = {
   convertToApiDate,
   findRandomFlights,
   getDelayPrediction,
-  getAeroporto
+  getAeroporto,
 };
