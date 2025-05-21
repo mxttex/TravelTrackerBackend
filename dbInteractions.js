@@ -24,7 +24,7 @@ async function AddUser(data) {
         console.log('Parametri:', params);
 
         // Esegui la query
-        const result = await DoQuery(query, params);
+        const result = await DoQuery(params, query);
 
         console.log('Risultato:', result);
         return result; // Torna il risultato della query
