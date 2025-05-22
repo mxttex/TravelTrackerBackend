@@ -7,7 +7,7 @@ async function AddUser(data) {
         // Log dei dati ricevuti
         console.log('Dati ricevuti:', data);
         
-        const query = `INSERT INTO DatabaseProjectWork.Cliente(Username, Mail, Nome, Cognome, Password,PuntiFedelta, DataDiNascita) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+        const query = `INSERT INTO DatabaseProjectWork.Cliente(Username, Mail, Nome, Cognome, Password, 0, DataDiNascita) VALUES (?, ?, ?, ?, ?, ?)`;
 
         const params = [
             data.Username,
@@ -15,7 +15,6 @@ async function AddUser(data) {
             data.Nome,
             data.Cognome,
             data.Password,
-            data.PuntiFedelta,
             data.DataDiNascita
         ];
 
