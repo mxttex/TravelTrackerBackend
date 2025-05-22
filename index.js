@@ -206,8 +206,7 @@ router.get("/getAeroporto/:nome", async (req, res) => {
 router.route("/addUser").post((req, res) => {
   dbInteractions.AddUser(req.body).then((data) => {
     try {
-      res.status(201).json(data);
-      console.log(data);
+      res.status(201).json(data["OkPacket"]);
     } catch (ex) {
       res.status(500).send(`Errore nell'inserimento nel DB.`)
     }
