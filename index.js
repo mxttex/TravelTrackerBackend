@@ -207,6 +207,14 @@ router.route("/addUser").post((req, res) => {
   dbInteractions.AddUser(req.body).then((data) => {
     try {
       res.status(201).json(data["OkPacket"]);
+
+      //non va più in catch, dà errore di sintassi nel json(data["OkPacket"])
+      //da vedere come torna input, cosa è OkPacket, come prendere bene i dati
+      //serve per far capire al client se l'utente è stato effettivamente aggiunto
+
+      //TODO
+      //da finire tutti gli altri metodi, alla fine basta aggiungere endpoint qui
+      //ne mancano un po'
     } catch (ex) {
       res.status(500).send(`Errore nell'inserimento nel DB.`)
     }
