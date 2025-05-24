@@ -50,9 +50,9 @@ async function TryToLog(data) {
 async function AddViaggio(data) {
     try {
         const result = await DoQuery(
-            [data.Cliente, data.CittaDiPartenza, data.CittaDiArrivo, data.Prezzo],
-            `INSERT INTO DatabaseProjectWork.Viaggio (Cliente, CittaDiPartenza, CittaDiArrivo, Prezzo)
-             VALUES (?, ?, ?, ?)`
+            [data.Cliente, data.CittaDiPartenza, data.CittaDiArrivo, data.Prezzo, data.NrPartecipanti, data.PuntiAccumulati],
+            `INSERT INTO DatabaseProjectWork.Viaggio (Cliente, CittaDiPartenza, CittaDiArrivo, Prezzo, NrPartecipanti, PuntiAccumulati)
+             VALUES (?, ?, ?, ?, ?, ?)`
         );
 
         const viaggioId = result.insertId;
